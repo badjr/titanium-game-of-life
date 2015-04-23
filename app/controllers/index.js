@@ -1,6 +1,6 @@
 $.index.open(); //Opens this window.
 
-// require('GameOfLifeModel'); 
+// require('GameOfLifeModel');
 
 var tableRows = 10;
 var tableCols = 10;
@@ -11,6 +11,9 @@ var tableLeft = 10;
 var numLiveCells = 0;
 
 var tableView = []; //Array holding the View elements that make up the table.
+
+
+
 
 var gameActive = false;
 
