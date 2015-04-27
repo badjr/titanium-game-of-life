@@ -1,9 +1,7 @@
 $.index.open(); //Opens this window.
 
-// require('GameOfLifeModel');
-
-var tableRows = 10;
-var tableCols = 10;
+var tableRows = 20;
+var tableCols = 20;
 var tableHeight = 10;
 var tableWidth = 10;
 var tableTop = 10;
@@ -12,26 +10,13 @@ var numLiveCells = 0;
 
 var tableView = []; //Array holding the View elements that make up the table.
 
-
-
-
 var gameActive = false;
 
 var gameInterval; //Variable that setInterval() assigns to.
 				  //Needed to cancel the interval with clearInterval(gameInterval)
-				  
 
-var GameOfLifeModel = require('GameOfLifeModel');
-var model = new GameOfLifeModel(10, 10);
-$.label.text = "num rows = " + model.getNumRows();
 
-// var model = Alloy.createModel('GameOfLifeModel');
-// var model = require('../models/GameOfLifeModel');
-// $.label.text = "num rows = " + model.getNumRows;
-// var gameGrid = model.get('theModel');
-// $.label.text = "num rows = " + model.get('numRows');
-// $.label.text = "num rows = " + gameGrid.getNumRows();
-
+//Perform these actions if these view components are clicked.
 function doClick(e) {
 	if (this.id == 'label') {
     	alert($.label.text);
@@ -46,22 +31,26 @@ function doClick(e) {
     }
 }
 
+//Starts the game, game advances in half second intervals
 function startGame(e) {
 		$.startButton.title = "Stop";
 		gameActive = true;
 		gameInterval = setInterval(tick, 500);
 }
 
+//Stops the game
 function stopGame(e) {
 	$.startButton.title = "Start";
 	gameActive = false;
 	clearInterval(gameInterval);
 }
 
+//Toggles a cell background to be blue (alive) or dead (white).
 function toggleCell(e) {
 	this.toggleBackground();
 }
 
+//Generating the table using Titanium View elements.
 for (var i=0; i < tableRows; i++) {
 	for (var j=0; j < tableCols; j++) {
 			 var view = Titanium.UI.createView({
@@ -87,18 +76,27 @@ for (var i=0; i < tableRows; i++) {
 			 	}
 			 });
 			 
-			 view.addEventListener('click', toggleCell);
-			 tableView.push(view);
+			 view.addEventListener('click', toggleCell); //Add event listener for each view
+			 tableView.push(view); //Store view in tableView array so we can access it later.
 			 
 			 $.index.add(view);
 	};
 };
-tableView[8 + 10*8].toggleBackground();
-// $.label.text = "numCellsAlive = " + numLiveCells;
 
-//logic
+//Set initial live cells, randomly
+for (var i = 0; i < tableRows; i++) {
+	for (var j = 0; j < tableCols; j++) {
+		var rand = Math.random();
+		if (rand < 0.50) {
+			tableView[i + tableRows*j].toggleBackground();
+		}
+	}
+}
+// tableView[8 + 10*8].toggleBackground();
+
+//Game of Life logic
 function cellExistsAt(i, j) {
-	return tableView[i + 10*j].backgroundColor == 'blue';
+	return tableView[i + tableRows*j].backgroundColor == 'blue';
 }
 
 function cellAliveNextTickAt(i, j) {
@@ -111,22 +109,22 @@ function cellAliveNextTickAt(i, j) {
 	if (i > 0 && j > 0 && cellExistsAt(i - 1, j - 1)) {
 		numNeighbors++;//top_left neighbor
 	}
-    if (i > 0 && j < tableWidth - 1 && cellExistsAt(i - 1, j + 1)) {
+    if (i > 0 && j < tableCols - 1 && cellExistsAt(i - 1, j + 1)) {
 		numNeighbors++;//top_right neighbor
     }
     if (j > 0 && cellExistsAt(i, j - 1)) {
 		numNeighbors++;//left neighbor
     }
-    if (j < tableWidth - 1 && cellExistsAt(i, j + 1)) {
+    if (j < tableCols - 1 && cellExistsAt(i, j + 1)) {
 		numNeighbors++;//right neighbor
     }
-    if (i < tableHeight - 1 && cellExistsAt(i + 1, j)) {
+    if (i < tableRows - 1 && cellExistsAt(i + 1, j)) {
 		numNeighbors++;//bottom neighbor
     }
-    if (i < tableHeight - 1 && j > 0 && cellExistsAt(i + 1, j - 1)) {
+    if (i < tableRows - 1 && j > 0 && cellExistsAt(i + 1, j - 1)) {
 		numNeighbors++;//bottom_left neighbor
     }
-    if (i < tableHeight - 1 && j < tableWidth - 1 && cellExistsAt(i + 1, j + 1)) {
+    if (i < tableRows - 1 && j < tableCols - 1 && cellExistsAt(i + 1, j + 1)) {
 		numNeighbors++;//bottom_right neighbor
     }
     return (
@@ -143,35 +141,35 @@ function tick() {
     //for the next time unit
     var survivalTable = [];
 
-    for (i = 0; i < 10; i++) {
-        for (j = 0; j < 10; j++) {
+    for (i = 0; i < tableRows; i++) {
+        for (j = 0; j < tableCols; j++) {
             if (cellAliveNextTickAt(i, j)) {
-                survivalTable[i + 10*j] = 1;
+                survivalTable[i + tableRows*j] = 1;
             }
             else {
-                survivalTable[i + 10*j] = 0;
+                survivalTable[i + tableRows*j] = 0;
             }
         }
     }
 
     //Use survival table to adjust game table for next time unit
-    for (i = 0; i < 10; i++) {
-        for (j = 0; j < 10; j++) {
-            if (survivalTable[i + 10*j] == 1) {
+    for (i = 0; i < tableRows; i++) {
+        for (j = 0; j < tableCols; j++) {
+            if (survivalTable[i + tableRows*j] == 1) {
             	if (!cellExistsAt(i, j)) {
-                	tableView[i + 10*j].backgroundColor = 'blue';
+                	tableView[i + tableRows*j].backgroundColor = 'blue';
                 	numLiveCells++;
 				}
             }
             else {
             	if (cellExistsAt(i, j)) {
-                	tableView[i + 10*j].backgroundColor = 'white';
+                	tableView[i + tableRows*j].backgroundColor = 'white';
                 	numLiveCells--;
 				}
             }
         }
     }
     
-    $.label.text = "numLiveCells = " + numLiveCells;
+    // $.label.text = "numLiveCells = " + numLiveCells;
     
 }

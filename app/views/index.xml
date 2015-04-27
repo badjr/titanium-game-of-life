@@ -1,7 +1,6 @@
 <Alloy>
 	<Window class="container">
-		<Label id="label" onClick="doClick">Hello, World</Label>
 		<Button id="startButton" onClick="doClick" title="Start"
-            top="60%" width="100" height="50" />
+            top="80%" width="100" height="50" />
     </Window>
 </Alloy>

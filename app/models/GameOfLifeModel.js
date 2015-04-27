@@ -37,24 +37,24 @@ function getNumCols() {
 }
 
 exports.definition = {
-	// config: {
-		// "columns": {
-			// "numRows": "Integer",
-			// "numCols": "Integer"
-		// }
-	// },
-	// extendModel: function(Model) {
-		// _.extend(Model.prototype, {
-// 			
-		// });
-// 
-		// return Model;
-	// },
-	// extendCollection: function(Collection) {
-		// _.extend(Collection.prototype, {
-			// // extended functions and properties go here
-		// });
-// 
-		// return Collection;
-	// }
+	config: {
+		"columns": {
+			"numRows": "Integer",
+			"numCols": "Integer"
+		}
+	},
+	extendModel: function(Model) {
+		_.extend(Model.prototype, {
+			
+		});
+
+		return Model;
+	},
+	extendCollection: function(Collection) {
+		_.extend(Collection.prototype, {
+			// extended functions and properties go here
+		});
+
+		return Collection;
+	}
 };
