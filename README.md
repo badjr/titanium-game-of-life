@@ -1,7 +1,6 @@
-# Titanium Game of Life
+#Titanium Game of Life
 
 This is a cross-platform mobile application for Android, Blackberry, and mobile web built using Appcelerator's Titanium Studio. The application is based on Conway's game of life.
-
 
 
 ----------------------------------
